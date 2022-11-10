@@ -41,7 +41,7 @@ function onPlay(e: Event, id: number) {
   <li class="album">
     <a :href="data.url">
       <div class="cover">
-        <img :src="data.cover" class="img" alt="" :title="data.title" />
+        <img v-lazy="data.cover" src="https://s1.xmcdn.com/yx/ximalaya-web-static/last/dist/images/default-album_c73995d.jpg" class="img" alt="" :title="data.title" />
         <div class="listen-count">
           <span>
             <i class="iconfont icon-erji"></i>
