@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import SlideShow from '../components/SlideShow.vue'
 import Category from '../components/Category.vue'
+import HomeCard from '../components/HomeCard.vue'
+import Player from '../components/player/Container.vue'
 import $api from '@/utils/api'
 
 //获取轮播图
@@ -13,8 +15,8 @@ async function getSlideshow() {
     console.log(err)
   }
 }
-getSlideshow()
 
+//频道
 let category = ref([])
 async function getCategory() {
   try {
@@ -23,14 +25,57 @@ async function getCategory() {
     console.log(err)
   }
 }
-getCategory()
+
+//猜你喜欢
+let like = ref([])
+async function getLike() {
+  try {
+    like.value = (await $api.getLike()).data.list
+  }catch(err) {
+    console.log(err)
+  }
+}
+
+//获取推荐
+let recommend = ref([])
+async function getRecommend() {
+  try {
+    recommend.value = (await $api.getRecommend()).data.list
+  }catch(err) {
+    console.log(err)
+  }
+}
+
+
+onMounted(() => {
+  getSlideshow()
+  getCategory()
+  getLike()
+  getRecommend()
+})
 </script>
 
 <template>
   <main>
     <div class="main-content">
+      <!-- 轮播图 -->
       <SlideShow :slideshowDatas="slideshowDatas" />
-      <Category :category="category" />
+      <!-- 频道 -->
+      <Category :categoryDatas="category" />
+      <!-- 猜你喜欢 -->
+      <HomeCard :albumList="like" title="猜你喜欢" :like="1" />
+      <!-- 推荐 -->
+      <HomeCard
+        v-for="item in recommend"
+        :key="item.id"
+        :albumList="item.albumList"
+        :title="item.title"
+        :moreUrl="item.moreUrl"
+        :hotword="item.hotword"
+        :rankList="item.soar"
+      />
+      <!-- 播放器 -->
+      <Player />
     </div>
   </main>
 </template>
@@ -38,6 +83,6 @@ getCategory()
 <style scoped>
 .main-content {
   width: 1080px;
-  margin: 20px auto 0;
+  margin: 20px auto 60px;
 }
 </style>
